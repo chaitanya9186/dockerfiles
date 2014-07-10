@@ -26,7 +26,7 @@ RUN mkdir -p /data/nuodb
 VOLUME ["/data/nuodb"]
 
 # Expose the ports we're interested in
-EXPOSE 48004
+EXPOSE 48004 48005 48006 4807
 EXPOSE 8080
 EXPOSE 8888
 EXPOSE 8889
