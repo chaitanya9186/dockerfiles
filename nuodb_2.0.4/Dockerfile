@@ -32,9 +32,9 @@ EXPOSE 8888
 EXPOSE 8889
 EXPOSE 22
 
-ADD start-db.sh /usr/bin/start-nuodb
-RUN chmod +x /usr/bin/start-nuodb
+ADD start-hook.sh /usr/bin/start-hook
+RUN chmod +x /usr/bin/start-hook
 
 # Set the default command to run on boot
 # This will run NuodDB Broker and Console as services
-ENTRYPOINT /usr/bin/start-nuodb
+ENTRYPOINT /usr/bin/start-hook
