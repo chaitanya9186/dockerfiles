@@ -12,7 +12,9 @@ RUN cd /opt &&  \
 # Install sshd for external access
 RUN apt-get install -y openssh-server
 RUN mkdir /var/run/sshd
-RUN echo 'root:screencast' |chpasswd
+RUN useradd -m ubuntu -s /bin/bash
+RUN echo 'ubuntu:screencast' |chpasswd
+RUN usermod -a -G sudo ubuntu
 
 # Enable service nuowebconsole as default
 RUN update-rc.d nuowebconsole enable
