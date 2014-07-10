@@ -1,5 +1,5 @@
 # Use the latest ubuntu with Oracle JDK 7
-FROM cleawing/base_java
+FROM cleawing/java
 
 ENV TORQUEBOX_VERSION 3.1.1
 

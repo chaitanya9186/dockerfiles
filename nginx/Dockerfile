@@ -5,7 +5,7 @@
 #
 
 # Pull base image.
-FROM cleawing/base_ubuntu
+FROM cleawing/ubuntu
 
 # Install Nginx.
 RUN \
