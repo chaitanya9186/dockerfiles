@@ -1,5 +1,6 @@
 #!/bin/bash
+chown -R nuodb:nuodb /data/nuodb
 /etc/init.d/nuoagent start
 /etc/init.d/nuowebconsole start
-chown -R nuodb:nuodb /data/nuodb
+/etc/init.d/nuoautoconsole start
 /bin/bash

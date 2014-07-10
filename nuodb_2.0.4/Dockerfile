@@ -21,6 +21,8 @@ VOLUME ["/data/nuodb"]
 # Expose the ports we're interested in
 EXPOSE 48004
 EXPOSE 8080
+EXPOSE 8888
+EXPOSE 8889
 
 ADD start-db.sh /usr/bin/start-nuodb
 RUN chmod +x /usr/bin/start-nuodb
