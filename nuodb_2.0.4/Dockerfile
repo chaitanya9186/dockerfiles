@@ -13,7 +13,7 @@ RUN cd /opt &&  \
 RUN update-rc.d nuowebconsole enable
 
 # Make datadir
-RUN mkdir -p /data/nuodb && chown -R nuodb:nuodb /data/nuodb
+RUN mkdir -p /data/nuodb
 
 # Define mountable directories.
 VOLUME ["/data/nuodb"]
