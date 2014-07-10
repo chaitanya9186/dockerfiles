@@ -12,8 +12,12 @@ RUN cd /opt &&  \
 # Enable service nuowebconsole as default
 RUN update-rc.d nuowebconsole enable
 
+# Make datadir
+RUN mkdir -p /data/nuodb
+RUN chown -R nuodb:nuodb /data/nuodb
+
 # Define mountable directories.
-VOLUME ["/data"]
+VOLUME ["/data/nuodb"]
 
 # Expose the ports we're interested in
 EXPOSE 48004
