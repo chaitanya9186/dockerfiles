@@ -15,6 +15,17 @@ RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" > /etc
 # Update the Ubuntu and PostgreSQL repository indexes
 RUN apt-get update
 
+# Install sshd for external access
+RUN apt-get install -y openssh-server
+RUN mkdir /var/run/sshd
+RUN useradd -m ubuntu -s /bin/bash
+RUN echo 'ubuntu:screencast' |chpasswd
+RUN usermod -a -G sudo ubuntu
+
+# Copy start-hook.sh
+ADD start-hook.sh /usr/bin/start-hook
+RUN chmod +x /usr/bin/start-hook
+
 # Install ``python-software-properties``, ``software-properties-common`` and PostgreSQL 9.3
 #  There are some warnings (in red) that show up during the build. You can hide
 #  them by prefixing each apt-get statement with DEBIAN_FRONTEND=noninteractive
@@ -30,7 +41,7 @@ USER postgres
 # then create a database `docker` owned by the ``docker`` role.
 # Note: here we use ``&&\`` to run commands one after the other - the ``\``
 #       allows the RUN command to span multiple lines.
-RUN    /etc/init.d/postgresql start &&\
+RUN  /etc/init.d/postgresql start &&\
     psql --command "CREATE USER docker WITH SUPERUSER PASSWORD 'docker';" &&\
     createdb -O docker docker
 
@@ -43,9 +54,12 @@ RUN echo "listen_addresses='*'" >> /etc/postgresql/9.3/main/postgresql.conf
 
 # Expose the PostgreSQL port
 EXPOSE 5432
+EXPOSE 22
 
 # Add VOLUMEs to allow backup of config, logs and databases
 VOLUME  ["data", "/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
 
+USER root
+
 # Set the default command to run when starting the container
-CMD ["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]
+ENTRYPOINT /usr/bin/start-hook
