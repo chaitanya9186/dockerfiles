@@ -15,35 +15,39 @@ RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" > /etc
 # Update the Ubuntu and PostgreSQL repository indexes
 RUN apt-get update
 
-# Install sshd for external access
-RUN apt-get install -y openssh-server
+# Copy start-hook.sh
+ADD start-hook.sh /usr/bin/start-hook
+RUN chmod +x /usr/bin/start-hook
+
+# Set system locale to UTF-8
+RUN locale-gen en_US.UTF-8 && update-locale LANG=en_US.UTF-8
+
+# Install ``python-software-properties``, ``software-properties-common`` and PostgreSQL 9.3
+#  There are some warnings (in red) that show up during the build. You can hide
+#  them by prefixing each apt-get statement with DEBIAN_FRONTEND=noninteractive
+RUN apt-get -y -q install postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3 openssh-server
+
+# Note: The official Debian and Ubuntu images automatically ``apt-get clean``
+# after each ``apt-get``
+
+# Configure sshd for external access
 RUN mkdir /var/run/sshd
 RUN useradd -m ubuntu -s /bin/bash
 RUN echo 'ubuntu:screencast' |chpasswd
 RUN usermod -a -G sudo ubuntu
 
-# Copy start-hook.sh
-ADD start-hook.sh /usr/bin/start-hook
-RUN chmod +x /usr/bin/start-hook
-
-# Install ``python-software-properties``, ``software-properties-common`` and PostgreSQL 9.3
-#  There are some warnings (in red) that show up during the build. You can hide
-#  them by prefixing each apt-get statement with DEBIAN_FRONTEND=noninteractive
-RUN apt-get -y -q install postgresql-9.3 postgresql-client-9.3 postgresql-contrib-9.3
-
-# Note: The official Debian and Ubuntu images automatically ``apt-get clean``
-# after each ``apt-get``
-
-# Run the rest of the commands as the ``postgres`` user created by the ``postgres-9.3`` package when it was ``apt-get installed``
-USER postgres
-
 # Create a PostgreSQL role named ``docker`` with ``docker`` as the password and
 # then create a database `docker` owned by the ``docker`` role.
 # Note: here we use ``&&\`` to run commands one after the other - the ``\``
 #       allows the RUN command to span multiple lines.
-RUN  /etc/init.d/postgresql start &&\
-    psql --command "CREATE USER docker WITH SUPERUSER PASSWORD 'docker';" &&\
-    createdb -O docker docker
+RUN  /etc/init.d/postgresql start && sudo -u postgres psql --command "CREATE USER docker WITH SUPERUSER PASSWORD 'docker';" &&\
+    sudo -u postgres createdb -O docker docker
+
+# Run the rest of the commands as the ``postgres`` user created by the ``postgres-9.3`` package when it was ``apt-get installed``
+# USER postgres
+
+# RUN psql --command "CREATE USER docker WITH SUPERUSER PASSWORD 'docker';" &&\
+#    createdb -O docker docker
 
 # Adjust PostgreSQL configuration so that remote connections to the
 # database are possible. 
@@ -59,7 +63,7 @@ EXPOSE 22
 # Add VOLUMEs to allow backup of config, logs and databases
 VOLUME  ["data", "/etc/postgresql", "/var/log/postgresql", "/var/lib/postgresql"]
 
-USER root
+# USER root
 
 # Set the default command to run when starting the container
 ENTRYPOINT /usr/bin/start-hook
