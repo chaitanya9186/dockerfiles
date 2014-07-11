@@ -22,9 +22,9 @@ VOLUME ["/data", "/opt/torquebox/jboss/standalone/deployments/"]
 # Expose the ports we're interested in
 EXPOSE 8080
 
-# Run everything below as the torquebox user
-USER torquebox
+# Copy start-hook.sh
+ADD start-hook.sh /usr/bin/start-hook
+RUN chmod +x /usr/bin/start-hook
 
-# Set the default command to run on boot
-# This will boot TorqueBox and bind to all interface
-CMD /opt/torquebox-$TORQUEBOX_VERSION/jboss/bin/standalone.sh -b 0.0.0.0
+# Define default command.
+ENTRYPOINT /usr/bin/start-hook

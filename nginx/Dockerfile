@@ -12,7 +12,6 @@ RUN \
   add-apt-repository -y ppa:nginx/stable && \
   apt-get update && \
   apt-get install -y nginx && \
-  echo "\ndaemon off;" >> /etc/nginx/nginx.conf && \
   chown -R www-data:www-data /var/lib/nginx
 
 # Define mountable directories.
@@ -21,9 +20,13 @@ VOLUME ["/data", "/etc/nginx/sites-enabled", "/etc/nginx/sites-available", "/etc
 # Define working directory.
 WORKDIR /etc/nginx
 
-# Define default command.
-CMD ["nginx"]
-
-# Expose ports.
+# Expose the ports we're interested in
 EXPOSE 80
 EXPOSE 443
+
+# Copy start-hook.sh
+ADD start-hook.sh /usr/bin/start-hook
+RUN chmod +x /usr/bin/start-hook
+
+# Define default command.
+ENTRYPOINT /usr/bin/start-hook

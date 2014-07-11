@@ -23,4 +23,4 @@ VOLUME ["/data"]
 WORKDIR /data
 
 # Define default command.
-CMD ["bash"]
+ENTRYPOINT /usr/bin/start-hook
