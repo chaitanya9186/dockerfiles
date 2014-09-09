@@ -1,4 +1,4 @@
-# Use the latest ubuntu with Oracle JDK 7
+# Use the latest ubuntu with Oracle JRE 7
 FROM cleawing/jre7
 
 ENV NUODB_VERSION 2.0.4
