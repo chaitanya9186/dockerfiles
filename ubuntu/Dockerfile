@@ -1,48 +1,16 @@
 #
-# Ubuntu Dockerfile
+# Ubuntu Dockerfile with Conf.d
 #
-# https://github.com/unitymind/ubuntu
+# https://github.com/cleawing/dockerfiles/ubuntu
 #
 
 # Pull base image.
-FROM ubuntu:14.04
+FROM dockerfile/ubuntu
 
-# Install.
-RUN \
-  sed -i 's/# \(.*multiverse$\)/\1/g' /etc/apt/sources.list && \
-  apt-get update && \
-  apt-get -y upgrade && \
-  apt-get install -y build-essential openssh-server && \
-  apt-get install -y software-properties-common && \
-  apt-get install -y byobu curl git htop man unzip vim wget && \
-  apt-get clean && apt-get autoclean
+MAINTAINER Cleawing <devops@cleawing.com>
 
 # Set system locale to UTF-8
 RUN locale-gen en_US.UTF-8 && update-locale LANG=en_US.UTF-8
 
-# Add files.
-ADD root/.bashrc /root/.bashrc
-ADD root/.gitconfig /root/.gitconfig
-ADD root/scripts /root/scripts
-
-# Configure sshd for external access
-RUN mkdir /var/run/sshd
-RUN useradd -m ubuntu -s /bin/bash
-RUN echo 'ubuntu:screencast' |chpasswd
-RUN usermod -a -G sudo ubuntu
-
-# Set environment variables.
-ENV HOME /root
-
-# Define working directory.
-WORKDIR /root
-
-# Expose the ports we're interested in
-EXPOSE 22
-
-# Copy start-hook.sh
-ADD start-hook.sh /usr/bin/start-hook
-RUN chmod +x /usr/bin/start-hook
-
-# Define default command.
-ENTRYPOINT /usr/bin/start-hook
+ADD https://github.com/kelseyhightower/confd/releases/download/v0.5.0/confd-0.5.0-linux-amd64 /usr/local/bin/confd
+RUN chmod +x /usr/local/bin/confd
