@@ -46,14 +46,23 @@ ADD https://github.com/kelseyhightower/confd/releases/download/v0.5.0/confd-0.5.
 RUN chmod +x /usr/local/bin/confd
 
 # Create directories
-RUN mkdir -p /etc/confd/{conf.d,templates}
-RUN mkdir -p /var/log/supervisor /etc/supervisor/{conf.d,services.d}
+RUN mkdir -p /etc/confd/conf.d
+RUN mkdir -p /etc/confd/templates
 
-# Copy supervisord config
+RUN mkdir -p /etc/supervisor/conf.d
+RUN mkdir -p /etc/supervisor/services.d
+
+RUN mkdir -p /var/log/supervisor 
+
+# Add supervisord config
 ADD ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+# Add conf.d script
+ADD ./opt/confd.sh /opt/confd.sh
+RUN chmod +x /opt/confd.sh
+
 # Add boot script
-ADD ./boot.sh /opt/boot.sh
+ADD ./opt/boot.sh /opt/boot.sh
 RUN chmod +x /opt/boot.sh
 
 # Define default command.
