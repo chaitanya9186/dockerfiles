@@ -4,4 +4,4 @@
 set -eo pipefail
 
 # Run confd
-confd -node=$ETCDCTL_PEERS -interval=$CONFD_INTERVAL
+confd -node=$ETCDCTL_PEERS -interval=$CONFD_INTERVAL -verbose
