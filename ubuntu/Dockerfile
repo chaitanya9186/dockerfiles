@@ -9,6 +9,10 @@ FROM ubuntu:14.04
 
 MAINTAINER Cleawing <devops@cleawing.com>
 
+ENV DOCKER_HOST 172.17.42.1
+ENV ETCD_HOST $DOCKER_HOST:4001
+ENV ETCDCTL_PEERS http://$ETCD
+
 # Install.
 RUN \
   apt-get update && \
@@ -32,6 +36,14 @@ RUN \
 # Install Conf.d
 ADD https://github.com/kelseyhightower/confd/releases/download/v0.5.0/confd-0.5.0-linux-amd64 /usr/local/bin/confd
 RUN chmod +x /usr/local/bin/confd
+
+# Create directories
+RUN mkdir -p /etc/confd/conf.d
+RUN mkdir -p /etc/confd/templates
+
+# Add boot script
+ADD ./boot.sh /opt/boot.sh
+RUN chmod +x /opt/boot.sh
 
 # Set environment variables.
 ENV HOME /root
