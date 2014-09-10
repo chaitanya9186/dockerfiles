@@ -20,7 +20,8 @@ RUN \
   apt-get install -y build-essential golang &&  \
   apt-get install -y software-properties-common && \
   apt-get install -y byobu curl git mc htop man unzip vim wget && \
-  apt-get clean && apt-get autoclean
+  apt-get clean && apt-get autoclean && \
+  rm -rf /var/lib/apt/lists/*
 
 # Set system locale to UTF-8
 RUN locale-gen en_US.UTF-8 && update-locale LANG=en_US.UTF-8
@@ -40,10 +41,6 @@ RUN chmod +x /usr/local/bin/confd
 # Create directories
 RUN mkdir -p /etc/confd/conf.d
 RUN mkdir -p /etc/confd/templates
-
-# Add boot script
-ADD ./boot.sh /opt/boot.sh
-RUN chmod +x /opt/boot.sh
 
 # Set environment variables.
 ENV HOME /root
