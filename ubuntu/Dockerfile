@@ -12,14 +12,21 @@ MAINTAINER Cleawing <devops@cleawing.com>
 ENV DOCKER_HOST 172.17.42.1
 ENV ETCD_HOST $DOCKER_HOST:4001
 ENV ETCDCTL_PEERS http://$ETCD_HOST
+ENV CONFD_INTERVAL 30
 
-# Install.
+# Set environment variables.
+ENV HOME /root
+
+# Define working directory.
+WORKDIR /root
+
+# Install packages
 RUN \
   apt-get update && \
   apt-get -y upgrade && \
   apt-get install -y build-essential golang &&  \
   apt-get install -y software-properties-common && \
-  apt-get install -y byobu curl git mc htop man unzip vim wget && \
+  apt-get install -y byobu curl git mc htop man unzip vim wget supervisor && \
   apt-get clean && apt-get autoclean && \
   rm -rf /var/lib/apt/lists/*
 
@@ -39,14 +46,15 @@ ADD https://github.com/kelseyhightower/confd/releases/download/v0.5.0/confd-0.5.
 RUN chmod +x /usr/local/bin/confd
 
 # Create directories
-RUN mkdir -p /etc/confd/conf.d
-RUN mkdir -p /etc/confd/templates
+RUN mkdir -p /etc/confd/{conf.d,templates}
+RUN mkdir -p /var/log/supervisor /etc/supervisor/{conf.d,services.d}
 
-# Set environment variables.
-ENV HOME /root
+# Copy supervisord config
+ADD ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Define working directory.
-WORKDIR /root
+# Add boot script
+ADD ./boot.sh /opt/boot.sh
+RUN chmod +x /opt/boot.sh
 
 # Define default command.
-CMD ["bash"]
+CMD /opt/boot.sh
