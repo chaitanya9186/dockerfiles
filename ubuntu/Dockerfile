@@ -50,12 +50,10 @@ RUN mkdir -p /etc/confd/conf.d
 RUN mkdir -p /etc/confd/templates
 
 RUN mkdir -p /etc/supervisor/conf.d
-RUN mkdir -p /etc/supervisor/services.d
-
 RUN mkdir -p /var/log/supervisor 
 
 # Add supervisord config
-ADD ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+ADD ./supervisord.conf /etc/supervisor/supervisord.conf
 
 # Add conf.d script
 ADD ./opt/confd.sh /opt/confd.sh

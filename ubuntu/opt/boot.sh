@@ -10,4 +10,4 @@ until confd -verbose -node=$ETCDCTL_PEERS -onetime; do
 done
 
 # Run supervisord
-/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
