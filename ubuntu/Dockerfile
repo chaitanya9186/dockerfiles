@@ -53,7 +53,7 @@ RUN mkdir -p /etc/supervisor/conf.d
 RUN mkdir -p /var/log/supervisor 
 
 # Add supervisord config
-ADD ./supervisord.conf /etc/supervisor/supervisord.conf
+ADD ./supervisord/supervisord.conf /etc/supervisor/supervisord.conf
 
 # Add confd supervisord file
 ADD ./supervisord/confd.conf /etc/supervisor/conf.d/confd.conf
