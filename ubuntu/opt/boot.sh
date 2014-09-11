@@ -3,8 +3,8 @@
 # Fail hard and fast
 set -eo pipefail
 
-# Onetime run of confd with waiting of connection to etcd cluster
-until confd -verbose -node=$ETCDCTL_PEERS -onetime; do
+# Check and wait etcd cluster
+until etcdctl ls /; do
 	echo "[info] Waiting connect to etcd cluster..."
 	sleep 1
 done
