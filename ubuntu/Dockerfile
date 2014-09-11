@@ -19,14 +19,6 @@ RUN \
   apt-get clean && apt-get autoclean && \
   rm -rf /var/lib/apt/lists/*
 
-ENV DOCKER_HOST unix:///var/run/docker.sock
-ENV ETCD_HOST 172.17.42.1:4001
-ENV ETCDCTL_PEERS http://$ETCD_HOST
-ENV CONFD_INTERVAL 30
-
-# Set environment variables.
-ENV HOME /root
-
 # Define working directory.
 WORKDIR /root
 
@@ -65,6 +57,14 @@ RUN chmod +x /opt/confd.sh
 # Add boot script
 ADD ./opt/boot.sh /opt/boot.sh
 RUN chmod +x /opt/boot.sh
+
+# Set environment variables.
+ENV DOCKER_HOST unix:///var/run/docker.sock
+ENV ETCD_HOST 172.17.42.1:4001
+ENV ETCDCTL_PEERS http://$ETCD_HOST
+ENV CONFD_INTERVAL 30
+
+ENV HOME /root
 
 # Define default command.
 CMD /opt/boot.sh
