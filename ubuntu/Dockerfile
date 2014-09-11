@@ -55,6 +55,9 @@ RUN mkdir -p /var/log/supervisor
 # Add supervisord config
 ADD ./supervisord.conf /etc/supervisor/supervisord.conf
 
+# Add confd supervisord file
+ADD ./supervisord/confd.conf /etc/supervisor/conf.d/confd.conf
+
 # Add conf.d script
 ADD ./opt/confd.sh /opt/confd.sh
 RUN chmod +x /opt/confd.sh
