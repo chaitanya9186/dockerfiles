@@ -24,7 +24,7 @@ WORKDIR /root
 RUN \
   apt-get update && \
   apt-get -y upgrade && \
-  apt-get install -y build-essential golang &&  \
+  apt-get install -y build-essential golang docker.io &&  \
   apt-get install -y software-properties-common && \
   apt-get install -y byobu curl git mc htop man unzip vim wget supervisor && \
   apt-get clean && apt-get autoclean && \
