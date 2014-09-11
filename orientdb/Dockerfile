@@ -13,8 +13,14 @@ RUN wget http://www.orientdb.org/portal/function/portal/download/unknown@unknown
 ADD ./conf.d /etc/confd/conf.d
 ADD ./templates /etc/confd/templates
 
-
 # Add supervisord files
 ADD ./supervisor.d/orientdb.conf /etc/supervisor/conf.d/orientdb.conf
 
-EXPOSE 2424 2480
+# Remove default confd daemon in Supervisor
+RUN rm /etc/supervisor/conf.d/confd.conf
+
+# Add orientdb boot script
+ADD ./opt/orientdb.sh /opt/orientdb.sh
+RUN chmod +x /opt/orientdb.sh
+
+EXPOSE 2424 2434 2480 
