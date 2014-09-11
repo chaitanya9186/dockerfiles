@@ -9,17 +9,6 @@ FROM ubuntu:14.04.1
 
 MAINTAINER Cleawing <devops@cleawing.com>
 
-ENV DOCKER_HOST 172.17.42.1
-ENV ETCD_HOST $DOCKER_HOST:4001
-ENV ETCDCTL_PEERS http://$ETCD_HOST
-ENV CONFD_INTERVAL 30
-
-# Set environment variables.
-ENV HOME /root
-
-# Define working directory.
-WORKDIR /root
-
 # Install packages
 RUN \
   apt-get update && \
@@ -29,6 +18,17 @@ RUN \
   apt-get install -y byobu curl git mc htop man unzip vim wget supervisor && \
   apt-get clean && apt-get autoclean && \
   rm -rf /var/lib/apt/lists/*
+
+ENV DOCKER_HOST unix:///var/run/docker.sock
+ENV ETCD_HOST 172.17.42.1:4001
+ENV ETCDCTL_PEERS http://$ETCD_HOST
+ENV CONFD_INTERVAL 30
+
+# Set environment variables.
+ENV HOME /root
+
+# Define working directory.
+WORKDIR /root
 
 # Set system locale to UTF-8
 RUN locale-gen en_US.UTF-8 && update-locale LANG=en_US.UTF-8
