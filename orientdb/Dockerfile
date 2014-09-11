@@ -9,5 +9,12 @@ RUN wget http://www.orientdb.org/portal/function/portal/download/unknown@unknown
     tar -xzf ./linux && mv ./orientdb-community-* /opt/orientdb && rm ./linux && \
     rm -rf /opt/orientdb/databases/*
 
-ADD ./supervisord/orientdb.conf /etc/supervisor/conf.d/orientdb.conf
+# Add conf.d files
+ADD ./conf.d /etc/confd/conf.d
+ADD ./templates /etc/confd/templates
+
+
+# Add supervisord files
+ADD ./supervisor.d/orientdb.conf /etc/supervisor/conf.d/orientdb.conf
+
 EXPOSE 2424 2480

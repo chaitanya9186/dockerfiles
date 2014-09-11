@@ -1,0 +1,8 @@
+[template]
+src   = "orientdb-dserver-config.template.xml"
+dest  = "/opt/orientdb/config/orientdb-dserver-config.xml"
+mode  = "0644"
+keys = [
+  "/cleawing/services/orientdb"
+]
+reload_cmd = "/usr/bin/supervisorctl restart orientdb"

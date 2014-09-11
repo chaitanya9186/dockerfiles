@@ -8,10 +8,10 @@ EnvironmentFile=/etc/environment
 TimeoutStartSec=0
 KillMode=none
 ExecStartPre=/bin/sh -c "docker pull cleawing/orientdb"
-ExecStartPre=-/bin/sh -c "docker kill orientdb-node-%i"
-ExecStartPre=-/bin/sh -c "docker rm orientdb-node-%i"
-ExecStart=/bin/sh -c "docker run --ip="$COREOS_PRIVATE_IPV4" --name orientdb-node-%i -p 2424 -p 2480 -p 2434 -v /var/run/docker.sock:/var/run/docker.sock cleawing/orientdb"
+ExecStart=/bin/sh -c "docker run  --name orientdb-node-%i -e CONTAINER_NAME=orientdb-node-%i -p $COREOS_PRIVATE_IPV4::2424 -p $COREOS_PRIVATE_IPV4::2480 -p $COREOS_PRIVATE_IPV4::2434 -v /var/run/docker.sock:/var/run/docker.sock cleawing/orientdb"
 ExecStop=/bin/sh -c "docker stop orientdb-node-%i"
+ExecStopPost=-/bin/sh -c "docker kill orientdb-node-%i"
+ExecStopPost=-/bin/sh -c "docker rm orientdb-node-%i"
 Restart=on-failure
 
 [Install]
