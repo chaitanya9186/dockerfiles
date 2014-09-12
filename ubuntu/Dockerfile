@@ -5,7 +5,7 @@
 #
 
 # Pull base image.
-FROM ubuntu:14.04.1
+FROM phusion/baseimage:latest
 
 MAINTAINER Cleawing <devops@cleawing.com>
 
@@ -15,7 +15,7 @@ RUN \
   apt-get -y upgrade && \
   apt-get install -y build-essential golang ruby1.9.3 docker.io &&  \
   apt-get install -y software-properties-common && \
-  apt-get install -y byobu curl git mc htop man unzip vim wget supervisor && \
+  apt-get install -y byobu curl git mc htop man unzip vim wget && \
   apt-get clean && apt-get autoclean && \
   rm -rf /var/lib/apt/lists/*
 
@@ -37,34 +37,13 @@ RUN \
 ADD https://github.com/kelseyhightower/confd/releases/download/v0.5.0/confd-0.5.0-linux-amd64 /usr/local/bin/confd
 RUN chmod +x /usr/local/bin/confd
 
-# Create directories
+# Create confd directories
 RUN mkdir -p /etc/confd/conf.d
 RUN mkdir -p /etc/confd/templates
-
-RUN mkdir -p /etc/supervisor/conf.d
-RUN mkdir -p /var/log/supervisor 
-
-# Add supervisord config
-ADD ./supervisord/supervisord.conf /etc/supervisor/supervisord.conf
-
-# Add confd supervisord file
-ADD ./supervisord/confd.conf /etc/supervisor/conf.d/confd.conf
-
-# Add conf.d script
-ADD ./opt/confd.sh /opt/confd.sh
-RUN chmod +x /opt/confd.sh
-
-# Add boot script
-ADD ./opt/boot.sh /opt/boot.sh
-RUN chmod +x /opt/boot.sh
 
 # Set environment variables.
 ENV DOCKER_HOST unix:///var/run/docker.sock
 ENV ETCD_HOST 172.17.42.1:4001
 ENV ETCDCTL_PEERS http://$ETCD_HOST
-ENV CONFD_INTERVAL 30
 
 ENV HOME /root
-
-# Define default command.
-ENTRYPOINT ["/opt/boot.sh"]
