@@ -13,7 +13,7 @@ MAINTAINER Cleawing <devops@cleawing.com>
 RUN \
   apt-get update && \
   apt-get -y upgrade && \
-  apt-get install -y build-essential golang docker.io &&  \
+  apt-get install -y build-essential golang ruby1.9.3 docker.io &&  \
   apt-get install -y software-properties-common && \
   apt-get install -y byobu curl git mc htop man unzip vim wget supervisor && \
   apt-get clean && apt-get autoclean && \
