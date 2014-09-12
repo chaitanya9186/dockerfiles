@@ -1,0 +1,21 @@
+[Unit]
+Description=orientdb-node
+Requires=docker.service
+After=docker.service
+
+[Service]
+EnvironmentFile=/etc/environment
+TimeoutStartSec=0
+KillMode=none
+ExecStartPre=/bin/sh -c "docker pull quay.io/cleawing/orientdb"
+ExecStart=/bin/sh -c "docker run  --name orientdb-%p-%m-%i -e GROUP_NAME=%p -p $COREOS_PRIVATE_IPV4::2424 -p $COREOS_PRIVATE_IPV4::2480 -p $COREOS_PRIVATE_IPV4::2434 -v /var/run/docker.sock:/var/run/docker.sock quay.io/cleawing/orientdb /sbin/my_init -- /opt/orientdb.sh"
+ExecStartPost=/bin/sh -c "fleetctl start %p@%i.announce-orientdb" 
+ExecStop=/bin/sh -c "docker stop -t 30 orientdb-%p-%m-%i"
+ExecStopPost=-/bin/sh -c "docker kill orientdb-%p-%m-%i"
+ExecStopPost=-/bin/sh -c "docker rm orientdb-%p-%m-%i"
+ExecStopPost=/bin/sh -c "fleetctl unload %p@%i.announce-orientdb"
+SuccessExitStatus=0 2
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

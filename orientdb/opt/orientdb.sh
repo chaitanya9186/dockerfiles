@@ -13,7 +13,7 @@ sed -i.bak "s/HOSTNAME/$HOSTNAME/" /opt/orientdb/config/orientdb-dserver-config.
 
 # Wait for confd to run once and install initial templates
 until confd -verbose -onetime -node $ETCDCTL_PEERS >/dev/null 2>/dev/null; do
-    echo "Waiting for confd to write initial templates..."
+    echo "Waiting for confd to build configs from templates..."
     sleep 1 
 done
 
