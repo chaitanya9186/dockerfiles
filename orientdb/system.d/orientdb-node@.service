@@ -9,9 +9,10 @@ TimeoutStartSec=0
 KillMode=none
 ExecStartPre=/bin/sh -c "docker pull quay.io/cleawing/orientdb"
 ExecStart=/bin/sh -c "docker run  --name orientdb-node-%i -p $COREOS_PRIVATE_IPV4::2424 -p $COREOS_PRIVATE_IPV4::2480 -p $COREOS_PRIVATE_IPV4::2434 -v /var/run/docker.sock:/var/run/docker.sock quay.io/cleawing/orientdb /sbin/my_init -- /opt/orientdb.sh"
-ExecStop=/bin/sh -c "docker stop orientdb-node-%i"
+ExecStop=/bin/sh -c "docker stop -t 30 orientdb-node-%i"
 ExecStopPost=-/bin/sh -c "docker kill orientdb-node-%i"
 ExecStopPost=-/bin/sh -c "docker rm orientdb-node-%i"
+SuccessExitStatus=130
 Restart=on-failure
 
 [Install]

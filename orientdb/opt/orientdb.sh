@@ -30,6 +30,7 @@ done
 # smart shutdown on SIGINT and SIGTERM
 function on_exit() {
     etcdctl rm --recursive /cleawing/services/orientdb/$HOSTNAME
+    exit 0
 }
 trap on_exit INT TERM
 
