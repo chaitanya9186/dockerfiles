@@ -26,7 +26,7 @@
     </group>
     
     <network>
-		<public-address>10.131.238.128:49181</public-address>
+		<public-address>CLUSTER_IP</public-address>
 		<port auto-increment="false">2434</port>
 		<join>
 	    	<multicast enabled="false">
