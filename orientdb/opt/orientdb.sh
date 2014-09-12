@@ -21,8 +21,11 @@ sed -i.bak2 "s/GROUP_PASS/$GROUP_PASS/" /etc/confd/templates/hazelcast.template.
 sed -i.bak3 "s/CLUSTER_IP/$CLUSTER/" /etc/confd/templates/hazelcast.template.xml
 sed -i.bak "s/HOSTNAME/$HOSTNAME/" /opt/orientdb/config/orientdb-dserver-config.xml
 
-# Set members from etcd
-confd -verbose -node=$ETCDCTL_PEERS -onetime
+# Wait for confd to run once and install initial templates
+until confd -verbose -onetime -node $ETCDCTL_PEERS >/dev/null 2>/dev/null; do
+    echo "Waiting for confd to write initial templates..."
+    sleep 1 
+done
 
 # smart shutdown on SIGINT and SIGTERM
 function on_exit() {
