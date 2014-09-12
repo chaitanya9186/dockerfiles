@@ -24,3 +24,5 @@ ADD ./opt/orientdb.sh /opt/orientdb.sh
 RUN chmod +x /opt/orientdb.sh
 
 EXPOSE 2424 2434 2480 
+
+ENTRYPOINT ["/opt/orientdb.sh"]

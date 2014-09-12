@@ -67,4 +67,4 @@ ENV CONFD_INTERVAL 30
 ENV HOME /root
 
 # Define default command.
-CMD /opt/boot.sh
+ENTRYPOINT ["/opt/boot.sh"]
