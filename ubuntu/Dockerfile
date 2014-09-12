@@ -33,6 +33,9 @@ RUN \
 	mv bin/etcdctl /usr/local/bin && chmod +x /usr/local/bin/etcdctl && \
 	cd .. && rm -rf etcdctl-0.4.5
 
+# Disabling SSH
+RUN rm -rf /etc/service/sshd /etc/my_init.d/00_regen_ssh_host_keys.sh
+
 # Install Conf.d
 ADD https://github.com/kelseyhightower/confd/releases/download/v0.5.0/confd-0.5.0-linux-amd64 /usr/local/bin/confd
 RUN chmod +x /usr/local/bin/confd
