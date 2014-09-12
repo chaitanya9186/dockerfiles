@@ -15,9 +15,10 @@ RUN \
   apt-get -y upgrade && \
   apt-get install -y build-essential golang ruby1.9.3 docker.io &&  \
   apt-get install -y software-properties-common && \
-  apt-get install -y byobu curl git mc htop man unzip vim wget && \
-  apt-get clean && apt-get autoclean && \
-  rm -rf /var/lib/apt/lists/*
+  apt-get install -y byobu curl git mc htop man unzip vim wget
+
+# Cleanup
+RUN apt-get clean && apt-get autoclean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Define working directory.
 WORKDIR /root
@@ -43,6 +44,10 @@ RUN chmod +x /usr/local/bin/confd
 # Create confd directories
 RUN mkdir -p /etc/confd/conf.d
 RUN mkdir -p /etc/confd/templates
+
+# Iniit scripts
+RUN mkdir -p /etc/my_init.d
+ADD ./my_init.d/check_etcd.sh /etc/my_init.d
 
 # Set environment variables.
 ENV DOCKER_HOST unix:///var/run/docker.sock
