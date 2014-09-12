@@ -13,3 +13,5 @@ while [ 1 ]
 do
 	sleep 60
 done
+
+exit 0
