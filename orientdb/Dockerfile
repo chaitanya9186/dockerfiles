@@ -17,10 +17,7 @@ ADD ./templates /etc/confd/templates
 ADD ./templates/orientdb-dserver-config.template.xml /opt/orientdb/config/orientdb-dserver-config.xml
 
 # Add Orientdb boot script
-RUN mkdir -p /etc/service/orientdb
-ADD ./runit.d/orientdb.sh /etc/service/orientdb/run
-RUN chmod +x /etc/service/orientdb/run
-ADD ./boot.sh /opt/boot.sh
-RUN chmod +x /opt/boot.sh
+ADD ./opt/orientdb.sh /opt/orientdb.sh
+RUN chmod +x /opt/orientdb.sh
 
 EXPOSE 2424 2434 2480

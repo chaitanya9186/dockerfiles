@@ -49,8 +49,6 @@ RUN mkdir -p /etc/confd/templates
 RUN mkdir -p /etc/my_init.d
 ADD ./my_init.d/check_etcd.sh /etc/my_init.d/check_etcd.sh
 RUN chmod +x /etc/my_init.d/check_etcd.sh
-ADD ./my_init.d/my_init.py /sbin/my_init
-RUN chmod +x /sbin/my_init
 
 # Set environment variables.
 ENV DOCKER_HOST unix:///var/run/docker.sock
