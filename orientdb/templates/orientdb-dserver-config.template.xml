@@ -11,7 +11,7 @@
         <!-- CLUSTER PLUGIN, TO TURN ON SET THE 'ENABLED' PARAMETER TO 'true' -->
         <handler class="com.orientechnologies.orient.server.hazelcast.OHazelcastPlugin">
             <parameters>
-                <parameter name="nodeName" value="CONTAINER_NAME" />
+                <parameter name="nodeName" value="HOSTNAME" />
                 <parameter name="enabled" value="true"/>
                 <parameter name="configuration.db.default"
                            value="${ORIENTDB_HOME}/config/default-distributed-db-config.json"/>
