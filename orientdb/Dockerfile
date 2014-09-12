@@ -1,4 +1,4 @@
-FROM cleawing/quay.io/cleawing/jdk7
+FROM quay.io/cleawing/jdk7
 
 MAINTAINER Cleawing <devops@cleawing.com>
 
