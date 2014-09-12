@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Fail hard and fast
-set -eo pipefail
-
 GROUP_NAME=${GROUP_NAME=dev}
 GROUP_PASS=${GROUP_PASS=devpass}
 
@@ -26,12 +23,5 @@ until confd -verbose -onetime -node $ETCDCTL_PEERS >/dev/null 2>/dev/null; do
     echo "Waiting for confd to write initial templates..."
     sleep 1 
 done
-
-# smart shutdown on SIGINT and SIGTERM
-function on_exit() {
-    etcdctl rm --recursive /cleawing/services/orientdb/$HOSTNAME
-    exit 0
-}
-trap on_exit INT TERM
 
 /opt/orientdb/bin/dserver.sh
