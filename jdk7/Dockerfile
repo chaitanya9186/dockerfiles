@@ -4,7 +4,7 @@
 # https://github.com/cleawing/dockerfiles/jdk7
 
 # Pull base image.
-FROM cleawing/ubuntu
+FROM quay.io/cleawing/ubuntu
 
 MAINTAINER Cleawing <devops@cleawing.com>
 
