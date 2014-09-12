@@ -13,6 +13,9 @@ RUN wget http://www.orientdb.org/portal/function/portal/download/unknown@unknown
 ADD ./conf.d /etc/confd/conf.d
 ADD ./templates /etc/confd/templates
 
+# Copy orientdb-dserver-config.xml
+ADD ./templates/orientdb-dserver-config.template.xml /opt/orientdb/config/orientdb-dserver-config.xml
+
 # Add Orientdb boot script
 ADD ./opt/orientdb.sh /opt/orientdb.sh
 RUN chmod +x /opt/orientdb.sh

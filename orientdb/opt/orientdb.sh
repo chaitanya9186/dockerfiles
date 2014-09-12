@@ -10,23 +10,18 @@ PUBLIC=`docker port $HOSTNAME 2480`
 BINARY=`docker port $HOSTNAME 2424`
 CLUSTER=`docker port $HOSTNAME 2434`
 
-# wait for etcd to be available
-until etcdctl --no-sync -C $ETCD ls >/dev/null 2>&1; do
-	echo "waiting for etcd at $ETCD..."
-	sleep $(($ETCD_TTL/2))  # sleep for half the TTL
-done
-
 # Self-publishing
 etcdctl set /cleawing/services/orientdb/$HOSTNAME/http $PUBLIC
 etcdctl set /cleawing/services/orientdb/$HOSTNAME/binary $BINARY
 etcdctl set /cleawing/services/orientdb/$HOSTNAME/cluster $CLUSTER
 
+# Prepare config
 sed -i.bak "s/GROUP_NAME/$GROUP_NAME/" /etc/confd/templates/hazelcast.template.xml
 sed -i.bak2 "s/GROUP_PASS/$GROUP_PASS/" /etc/confd/templates/hazelcast.template.xml
 sed -i.bak3 "s/CLUSTER_IP/$CLUSTER/" /etc/confd/templates/hazelcast.template.xml
-sed -i.bak "s/HOSTNAME/$HOSTNAME/" /etc/confd/templates/orientdb-dserver-config.template.xml
+sed -i.bak "s/HOSTNAME/$HOSTNAME/" /opt/orientdb/config/orientdb-dserver-config.xml
 
-# Set exists members from etcd
+# Set members from etcd
 confd -verbose -node=$ETCDCTL_PEERS -onetime
 
 # smart shutdown on SIGINT and SIGTERM
