@@ -10,6 +10,12 @@ PUBLIC=`docker port $HOSTNAME 2480`
 BINARY=`docker port $HOSTNAME 2424`
 CLUSTER=`docker port $HOSTNAME 2434`
 
+# wait for etcd to be available
+until etcdctl --no-sync -C $ETCD ls >/dev/null 2>&1; do
+	echo "waiting for etcd at $ETCD..."
+	sleep $(($ETCD_TTL/2))  # sleep for half the TTL
+done
+
 # Self-publishing
 etcdctl set /cleawing/services/orientdb/$HOSTNAME/http $PUBLIC
 etcdctl set /cleawing/services/orientdb/$HOSTNAME/binary $BINARY
