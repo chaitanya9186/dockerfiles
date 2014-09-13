@@ -1,0 +1,12 @@
+[Unit]
+Description=%p.%m.%i
+Requires=docker.service
+After=docker.service
+
+[Service]
+EnvironmentFile=/etc/environment
+ExecStart=/bin/sh -c "while true; do etcdctl set /cleawing/services/orientdb/%m.$(echo '%p' | sed 's@.orientdb.announce@@').%i/cluster `docker port %m.$(echo '%p' | sed 's@.announce@@').%i 2434` --ttl 60; etcdctl set /cleawing/services/orientdb/%m.$(echo '%p' | sed 's@.orientdb.announce@@').%i/http `docker port %m.$(echo '%p' | sed 's@.announce@@').%i 2480` --ttl 60; etcdctl set /cleawing/services/orientdb/%m.$(echo '%p' | sed 's@.orientdb.announce@@').%i/binary `docker port %m.$(echo '%p' | sed 's@.announce@@').%i 2424` --ttl 60; sleep 45; done"
+ExecStop=/usr/bin/etcdctl rm --recursive /cleawing/services/orientdb/%m.$(echo '%p' | sed 's@.orientdb.announce@@').%i
+
+[X-Fleet]
+X-ConditionMachineOf=clean.orientdb@%i.service

@@ -1,8 +1,0 @@
-[template]
-src   = "hazelcast.template.xml"
-dest  = "/opt/orientdb/config/hazelcast.xml"
-mode  = "0644"
-keys = [
-  "/cleawing/services/orientdb"
-]
-reload_cmd = "/usr/bin/supervisorctl restart orientdb"
