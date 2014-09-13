@@ -1,7 +1,16 @@
 [Unit]
 Description=%p.%m.%i
+Requires=etcd.service
 Requires=docker.service
-After=docker.service
+
+# Requirements
+Requires=etcd.service
+Requires=clean.orientdb@%i.service
+
+# Dependency ordering and binding
+After=etcd.service
+After=clean.orientdb@%i.service
+BindsTo=clean.orientdb@%i.service
 
 [Service]
 EnvironmentFile=/etc/environment
