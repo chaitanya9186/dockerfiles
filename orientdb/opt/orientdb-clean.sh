@@ -1,8 +1,5 @@
 #!/bin/bash
 
-if [ -d "/opt/orientdb/databases/GratefulDeadConcerts" ]
-then
-	rm -rf /opt/orientdb/GratefulDeadConcerts/
-fi
+[ -d "/opt/orientdb/databases/GratefulDeadConcerts" ] && rm -rf /opt/orientdb/databases/GratefulDeadConcerts
 
 /opt/orientdb.sh
