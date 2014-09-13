@@ -21,8 +21,8 @@ RUN mkdir -p /opt/sample_databases
 ADD templates/databases /opt/sample_databases
 
 # Add Orientdb boot script
-ADD ./opt/orientdb.sh /opt/orientdb.sh
-ADD ./opt/orientdb-sample.sh /opt/orientdb-sample.sh
+ADD opt/orientdb.sh /opt/orientdb.sh
+ADD opt/orientdb-sample.sh /opt/orientdb-sample.sh
 RUN chmod +x /opt/*.sh
 
 EXPOSE 2424 2434 2480
