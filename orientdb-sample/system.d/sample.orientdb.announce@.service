@@ -9,4 +9,4 @@ ExecStart=/bin/sh -c "while true; do etcdctl set /cleawing/services/orientdb/%m.
 ExecStop=/usr/bin/etcdctl rm --recursive /cleawing/services/orientdb/%m.$(echo '%p' | sed 's@.announce@@').%i
 
 [X-Fleet]
-X-ConditionMachineOf=group.orientdb@%i.service
+X-ConditionMachineOf=sample.orientdb@%i.service
