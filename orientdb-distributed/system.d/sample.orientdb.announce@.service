@@ -1,0 +1,35 @@
+[Unit]
+Description=%p.%m.%i
+
+# Requirements
+Requires=docker.service
+Requires=etcd.service
+Requires=sample.orientdb@%i.service
+
+# Dependency ordering and binding
+After=etcd.service
+After=docker.service
+After=sample.orientdb@%i.service
+BindsTo=sample.orientdb@%i.service
+
+[Service]
+EnvironmentFile=/etc/environment
+ExecStart=/bin/sh -c "\
+	GROUP=`echo '%p' | sed 's@.orientdb.announce@@'`; \
+	CONTAINER_NAME=`echo '%m.%p.%i' | sed 's@.announce@@'`; \
+	while true; do \
+		docker inspect $CONTAINER_NAME >/dev/null 2>&1; \
+		if [ $? -eq 0 ]; then \
+			etcdctl set /cleawing/services/orientdb/$GROUP/%m.%i/cluster `docker port $CONTAINER_NAME 2434` --ttl 60; \
+			etcdctl set /cleawing/services/orientdb/$GROUP/%m.%i/http `docker port $CONTAINER_NAME 2480` --ttl 60; \
+			etcdctl set /cleawing/services/orientdb/$GROUP/%m.%i/binary `docker port $CONTAINER_NAME 2424` --ttl 60; \
+			sleep 45; \
+		else \
+			echo 'Waiting service container...'; \
+			sleep 1; \
+		fi; \
+	done"
+ExecStop=/bin/bash -c "etcdctl rm --recursive /cleawing/services/orientdb/$(echo '%p' | sed 's@.orientdb.announce@@')/%m.%i"
+
+[X-Fleet]
+X-ConditionMachineOf=sample.orientdb@%i.service

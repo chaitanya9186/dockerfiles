@@ -1,0 +1,30 @@
+[Unit]
+# Requirements
+Requires=docker.service
+Requires=%p.data@%i.service
+Requires=%p.announce@%i.service
+
+# Dependency ordering
+Before=%p.announce@%i.service
+After=docker.service
+After=%p.data@%i.service
+
+[Service]
+EnvironmentFile=/etc/environment
+TimeoutStartSec=360
+KillMode=none
+ExecStartPre=/bin/bash -c "docker pull quay.io/cleawing/orientdb"
+
+ExecStart=/bin/bash -c "docker run --name %m.%p.%i -e GROUP_NAME=`echo '%p' | sed 's@.orientdb@@'` -p $COREOS_PUBLIC_IPV4::2424 -p $COREOS_PUBLIC_IPV4::2480 -p $COREOS_PRIVATE_IPV4::2434 -v /var/run/docker.sock:/var/run/docker.sock --volumes-from %m.%p.data.%i quay.io/cleawing/orientdb /sbin/my_init -- /opt/orientdb.sh"
+
+ExecStop=/bin/bash -c "docker stop -t 30 %m.%p.%i"
+ExecStopPost=-/bin/bash -c "docker kill %m.%p.%i"
+ExecStopPost=-/bin/bash -c "docker rm %m.%p.%i"
+SuccessExitStatus=0 2
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
+[X-Fleet]
+X-ConditionMachineOf=%p.data@%i.service
