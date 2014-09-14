@@ -1,0 +1,11 @@
+[Unit]
+Description=%m.%p.%i 
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStartPre=/bin/bash -c "docker pull quay.io/cleawing/orientdb-data"
+ExecStart=/bin/bash -c "docker inspect %m.%p.%i >/dev/null 2>&1 || docker run --name %m.%p.%i quay.io/cleawing/orientdb-data true"
+
+[Install]
+WantedBy=multi-user.target
