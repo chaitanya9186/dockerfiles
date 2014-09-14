@@ -1,25 +1,18 @@
 [Unit]
-# Requirements
-Requires=etcd.service
 Requires=docker.service
-Requires=clean.orientdb.announce@%i.service
-
-# Dependency ordering
-After=etcd.service
 After=docker.service
-Before=clean.orientdb.announce@%i.service
 
 [Service]
 EnvironmentFile=/etc/environment
-TimeoutStartSec=0
+TimeoutStartSec=180
 KillMode=none
-ExecStartPre=/bin/sh -c "docker pull quay.io/cleawing/orientdb"
-ExecStart=/bin/sh -c "docker run  --name %m.%p.%i -e GROUP_NAME=%p -p $COREOS_PUBLIC_IPV4::2424 -p $COREOS_PUBLIC_IPV4::2480 -p $COREOS_PRIVATE_IPV4::2434 -v /var/run/docker.sock:/var/run/docker.sock quay.io/cleawing/orientdb /sbin/my_init -- /opt/orientdb-clean.sh"
-# ExecStartPost=/bin/sh -c "fleetctl start %p.announce@%i.service" 
-ExecStop=/bin/sh -c "docker stop -t 30 %m.%p.%i"
-ExecStopPost=-/bin/sh -c "docker kill %m.%p.%i"
-ExecStopPost=-/bin/sh -c "docker rm %m.%p.%i"
-# ExecStopPost=/bin/sh -c "fleetctl destroy %p.announce@%i.service"
+ExecStartPre=/bin/bash -c "docker pull quay.io/cleawing/orientdb"
+ExecStart=/bin/bash -c "docker run  --name %m.%p.%i -e GROUP_NAME=`echo '%p' | sed 's@.orientdb@@'` -p $COREOS_PUBLIC_IPV4::2424 -p $COREOS_PUBLIC_IPV4::2480 -p $COREOS_PRIVATE_IPV4::2434 -v /var/run/docker.sock:/var/run/docker.sock quay.io/cleawing/orientdb /sbin/my_init -- /opt/orientdb-clean.sh"
+ExecStartPost=/bin/bash -c "fleetctl start %p.announce@%i.service" 
+ExecStop=/bin/bash -c "docker stop -t 30 %m.%p.%i"
+ExecStopPost=-/bin/bash -c "docker kill %m.%p.%i"
+ExecStopPost=-/bin/bash -c "docker rm %m.%p.%i"
+ExecStopPost=/bin/bash -c "fleetctl destroy %p.announce@%i.service"
 SuccessExitStatus=0 2
 Restart=on-failure
 

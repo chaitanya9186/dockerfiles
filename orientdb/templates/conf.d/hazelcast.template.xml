@@ -21,8 +21,8 @@
     </properties>
    
     <group>
-		<name>dev</name>
-		<password>devpass</password>
+		<name>GROUP_NAME</name>
+		<password>GROUP_PASS</password>
     </group>
     
     <network>
@@ -35,7 +35,7 @@
 	    	</multicast>
 	    	<tcp-ip enabled="true">
 				<conn-timeout-seconds>10</conn-timeout-seconds>
-		{{ range $member := .cleawing_services_orientdb }}{{ if $member.Nodes }}{{ range $config := $member.Nodes }}{{ if eq (Base $config.Key) "cluster" }}
+		{{ range $member := .cleawing_services_orientdb_GROUP_NAME }}{{ if $member.Nodes }}{{ range $config := $member.Nodes }}{{ if eq (Base $config.Key) "cluster" }}
 				<member>{{ $config.Value }}</member>
 		{{ end }}{{ end }}{{ end }}{{ end }}
     	  	</tcp-ip>

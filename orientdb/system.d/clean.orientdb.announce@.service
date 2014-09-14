@@ -1,21 +1,20 @@
 [Unit]
 Description=%p.%m.%i
-Requires=etcd.service
 Requires=docker.service
-
-# Requirements
-Requires=etcd.service
-Requires=clean.orientdb@%i.service
-
-# Dependency ordering and binding
-After=etcd.service
-After=clean.orientdb@%i.service
-BindsTo=clean.orientdb@%i.service
+After=docker.service
 
 [Service]
 EnvironmentFile=/etc/environment
-ExecStart=/bin/sh -c "while true; do etcdctl set /cleawing/services/orientdb/%m.$(echo '%p' | sed 's@.orientdb.announce@@').%i/cluster `docker port %m.$(echo '%p' | sed 's@.announce@@').%i 2434` --ttl 60; etcdctl set /cleawing/services/orientdb/%m.$(echo '%p' | sed 's@.orientdb.announce@@').%i/http `docker port %m.$(echo '%p' | sed 's@.announce@@').%i 2480` --ttl 60; etcdctl set /cleawing/services/orientdb/%m.$(echo '%p' | sed 's@.orientdb.announce@@').%i/binary `docker port %m.$(echo '%p' | sed 's@.announce@@').%i 2424` --ttl 60; sleep 45; done"
-ExecStop=/bin/sh -c "/usr/bin/etcdctl rm --recursive /cleawing/services/orientdb/%m.$(echo '%p' | sed 's@.orientdb.announce@@').%i"
+ExecStart=/bin/bash -c "\
+	NODE_KEY = $(echo '%p' | sed 's@.orientdb.announce@@')/%m.%i; \
+	CONTAINER_NAME = %m.$(echo '%p' | sed 's@.announce@@').%i; \
+	while true; do \
+		etcdctl set /cleawing/services/orientdb/$NODE_KEY/cluster `docker port $CONTAINER_NAME 2434` --ttl 60; \
+		etcdctl set /cleawing/services/orientdb/$NODE_KEY/http `docker port $CONTAINER_NAME 2480` --ttl 60; \
+		etcdctl set /cleawing/services/orientdb/$NODE_KEY/binary `docker port $CONTAINER_NAME 2424` --ttl 60; \
+		sleep 45; \
+	done"
+ExecStop=/bin/bash -c "etcdctl rm --recursive /cleawing/services/orientdb/$(echo '%p' | sed 's@.orientdb.announce@@')/%m.%i"
 
 [X-Fleet]
 X-ConditionMachineOf=clean.orientdb@%i.service
