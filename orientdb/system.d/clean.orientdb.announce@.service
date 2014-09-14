@@ -5,13 +5,13 @@ After=docker.service
 
 [Service]
 EnvironmentFile=/etc/environment
-ExecStart=/bin/bash -c "\
-	NODE_KEY = $(echo '%p' | sed 's@.orientdb.announce@@')/%m.%i; \
-	CONTAINER_NAME = %m.$(echo '%p' | sed 's@.announce@@').%i; \
+ExecStart=/bin/sh -c "\
+	GROUP=`echo '%p' | sed 's@.orientdb.announce@@'`; \
+	CONTAINER_NAME=`echo '%m.%p.%i' | sed 's@.announce@@'`; \
 	while true; do \
-		etcdctl set /cleawing/services/orientdb/$NODE_KEY/cluster `docker port $CONTAINER_NAME 2434` --ttl 60; \
-		etcdctl set /cleawing/services/orientdb/$NODE_KEY/http `docker port $CONTAINER_NAME 2480` --ttl 60; \
-		etcdctl set /cleawing/services/orientdb/$NODE_KEY/binary `docker port $CONTAINER_NAME 2424` --ttl 60; \
+		etcdctl set /cleawing/services/orientdb/$GROUP/%m.%i/cluster `docker port $CONTAINER_NAME 2434` --ttl 60; \
+		etcdctl set /cleawing/services/orientdb/$GROUP/%m.%i/http `docker port $CONTAINER_NAME 2480` --ttl 60; \
+		etcdctl set /cleawing/services/orientdb/$GROUP/%m.%i/binary `docker port $CONTAINER_NAME 2424` --ttl 60; \
 		sleep 45; \
 	done"
 ExecStop=/bin/bash -c "etcdctl rm --recursive /cleawing/services/orientdb/$(echo '%p' | sed 's@.orientdb.announce@@')/%m.%i"
